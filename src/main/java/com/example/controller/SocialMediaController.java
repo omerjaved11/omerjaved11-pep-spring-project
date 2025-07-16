@@ -2,6 +2,7 @@ package com.example.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.entity.Account;
 import com.example.entity.Message;
+import com.example.service.AccountService;
+import com.example.service.MessageService;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller using Spring. The endpoints you will need can be
@@ -24,43 +27,42 @@ import com.example.entity.Message;
 @RestController
 public class SocialMediaController {
 
-    @PostMapping("register")
-    ResponseEntity<Account> registerUser(@RequestBody Account reqAccount){
-        Account respAccount =  null;
+    private AccountService accountService;
+    private MessageService messageService;
 
-        return ResponseEntity.ok().body(respAccount);
+    @Autowired
+    public SocialMediaController(AccountService accountService, MessageService messageService){
+        this.accountService = accountService;
+        this.messageService = messageService;
+    }
+
+    @PostMapping("register")
+    ResponseEntity<Account> registerUser(@RequestBody Account account){
+        return ResponseEntity.ok().body(accountService.registerUser(account));
     }
 
     
     @PostMapping("login")
-    ResponseEntity<Account> loginUser(@RequestBody Account reqAccount){
-        Account respAccount =  null;
-
-        return ResponseEntity.ok().body(respAccount);
+    ResponseEntity<Account> loginUser(@RequestBody Account account){
+        return ResponseEntity.ok().body(accountService.login(account));
     }
 
     
     @PostMapping("messages")
-    ResponseEntity<Message> registerUser(@RequestBody Message message){
-        Message respMessage =  null;
-
-        return ResponseEntity.ok().body(respMessage);
+    ResponseEntity<Message> newMessage(@RequestBody Message message){
+        return ResponseEntity.ok().body(messageService.newMessage(message));
     }
 
      
     @GetMapping("messages")
     ResponseEntity<List<Message>> getAllMessages(){
-        List<Message> allMessages = null;
-
-        return ResponseEntity.ok().body(allMessages);
+        return ResponseEntity.ok().body(messageService.getAllMessages());
     }
 
       
     @GetMapping("messages/{messageId}")
-    ResponseEntity<Message> getMessage(@PathVariable long messageId){
-        Message message = null;
-
-        return ResponseEntity.ok().body(message);
+    ResponseEntity<Message> getMessage(@PathVariable int messageId){
+        return ResponseEntity.ok().body(messageService.getMessage(messageId));
     }
 
       
