@@ -39,14 +39,26 @@ public class MessageService {
         return messageRepository.findById(messageId).isPresent()? messageRepository.findById(messageId).get(): null;
     }
 
-    public String deleteMessage(Integer messageId){
-        if(messageRepository.existsById(messageId))
-            return "1";
+    public Integer deleteMessage(Integer messageId){
+        if(messageRepository.existsById(messageId)){
+            messageRepository.deleteById(messageId);
+            return 1;
+        }
         else 
             return null;
     }
 
+    public Integer patchMessage(Integer messageId, Message updatedMessage){
+        if(!messageRepository.existsById(messageId))
+            throw new IllegalArgumentException("Message not found");
+        if(null == updatedMessage.getMessageText() || updatedMessage.getMessageText().isEmpty() || updatedMessage.getMessageText().isBlank() || updatedMessage.getMessageText().length() > 255)
+            throw new IllegalArgumentException("Message text is blank or length is greater than 255 characters");
+        return null != messageRepository.save(updatedMessage)? 1: null;
+    }
 
+    public List<Message> getAllMessageByAccount(Integer accountId){
+        return messageRepository.findAllByPostedBy(accountId);
+    }
 
 
 }
